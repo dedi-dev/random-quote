@@ -82,7 +82,7 @@ export default function Home({
 
   return (
     <main
-      className={`p-0 box-border min-w-screen min-h-screen flex flex-col bg-white text-black px-[36px] ${raleway.className}`}
+      className={`p-0 box-border min-w-screen min-h-screen flex flex-col items-center bg-white text-black px-[36px] ${raleway.className}`}
     >
       <header className="w-full h-14 flex items-center justify-end fixed left-0 top-0 px-[36px] bg-white">
         <div
@@ -92,10 +92,10 @@ export default function Home({
           random <FiRefreshCw className="ml-2" />
         </div>
       </header>
-      <section className="pt-3 h-full w-full flex flex-col items-center mt-14">
-        <div className="w-[614px] mb-8 pl-8">
+      <section className="pt-3 h-full max-w-[614px] flex flex-col items-center mt-14">
+        <div className="min-w-[263px] max-w-[400px] flex justify-start mb-8 self-start">
           <p
-            className={`m-0 font-bold text-2xl ${
+            className={`ml-[44px] font-bold text-2xl ${
               !quotes.length ? "hidden" : ""
             }`}
           >
@@ -103,7 +103,7 @@ export default function Home({
           </p>
         </div>
         {!quotes.length ? (
-          <div className="w-[614px] mb-8 pl-8 border-l-8 border-yellow-400">
+          <div className="w-full mb-8 pl-8 border-l-8 border-yellow-400">
             <p className="text-2xl font-medium">{`"${data?.quoteText}"`}</p>
           </div>
         ) : (
@@ -111,7 +111,7 @@ export default function Home({
             return (
               <div
                 key={q._id}
-                className="w-[614px] mb-16 pl-8 border-l-8 border-yellow-400"
+                className="w-full mb-16 pl-8 border-l-8 border-yellow-400"
               >
                 <p className="text-2xl font-medium">{`"${q?.quoteText}"`}</p>
               </div>
@@ -122,7 +122,7 @@ export default function Home({
           onClick={() => getQuotesByAuthor(1)}
           className={`${
             quotes.length ? "hidden" : ""
-          } mt-2 px-[10px] py-[20px] flex w-[580px] bg-white items-center justify-between hover:bg-black hover:text-white hover:cursor-pointer`}
+          } mt-2 px-[10px] py-[20px] flex w-full max-w-[580px] bg-white items-center justify-between hover:bg-black hover:text-white hover:cursor-pointer`}
         >
           <div>
             <p className="m-0 font-medium text-2xl ">{data?.quoteAuthor}</p>
