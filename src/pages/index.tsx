@@ -66,10 +66,14 @@ export default function Home({
   };
 
   const handleScroll = () => {
-    if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight) {
-      if (nextPage) {
-        getQuotesByAuthor(nextPage);
-      }
+    const scrollPosition = window.innerHeight + window.scrollY;
+    const pageHeight = document.documentElement.scrollHeight;
+    const bottomOffset = 20;
+    const bottomOfWindow = scrollPosition > pageHeight - bottomOffset;
+    if (bottomOfWindow) {
+        if (nextPage) {
+          getQuotesByAuthor(nextPage);
+        }
     }
   };
 
@@ -78,6 +82,7 @@ export default function Home({
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [nextPage]);
 
   return (
@@ -107,10 +112,10 @@ export default function Home({
             <p className="text-2xl font-medium">{`"${data?.quoteText}"`}</p>
           </div>
         ) : (
-          quotes.map((q) => {
+          quotes.map((q, index) => {
             return (
               <div
-                key={q._id}
+                key={q._id + index}
                 className="w-full mb-16 pl-8 border-l-8 border-yellow-400"
               >
                 <p className="text-2xl font-medium">{`"${q?.quoteText}"`}</p>
