@@ -1,4 +1,4 @@
-import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
+import type { InferGetStaticPropsType, GetStaticProps } from "next";
 import { FiRefreshCw } from "react-icons/fi";
 import { BsArrowRight } from "react-icons/bs";
 import { Raleway } from "next/font/google";
@@ -15,7 +15,7 @@ type Quote = {
   __v: number;
 };
 
-export const getServerSideProps: GetServerSideProps<{
+export const getStaticProps: GetStaticProps<{
   quote: Quote;
 }> = async () => {
   let quote = {
@@ -36,7 +36,7 @@ export const getServerSideProps: GetServerSideProps<{
 
 export default function Home({
   quote,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   const [data, setData] = useState<Quote>(quote);
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [nextPage, setNextPage] = useState<number | null>(null);
