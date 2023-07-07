@@ -1,4 +1,3 @@
-// import type { InferGetStaticPropsType, GetStaticProps } from "next";
 import type { InferGetServerSidePropsType, GetServerSideProps } from "next";
 import { FiRefreshCw } from "react-icons/fi";
 import { BsArrowRight } from "react-icons/bs";
@@ -40,6 +39,7 @@ export default function Home({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [data, setData] = useState<Quote>(quote);
   const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [nextPage, setNextPage] = useState<number | null>(null);
 
   const reload = () => {
     axios
@@ -47,24 +47,38 @@ export default function Home({
       .then((res) => {
         setData(res.data.data[0]);
         setQuotes([]);
+        setNextPage(null);
       });
   };
 
-  const getQuotesByAuthor = () => {
+  const getQuotesByAuthor = (page: number) => {
     axios
       .get(`https://quote-garden.onrender.com/api/v3/quotes`, {
         params: {
+          page,
           author: data.quoteAuthor,
         },
       })
       .then((res) => {
-        setQuotes(res.data.data);
+        setQuotes((prevItems) => [...prevItems, ...res.data.data]);
+        setNextPage(res.data.pagination.nextPage);
       });
   };
 
+  const handleScroll = () => {
+    if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight) {
+      if (nextPage) {
+        getQuotesByAuthor(nextPage);
+      }
+    }
+  };
+
   useEffect(() => {
-    // reload();
-  }, []);
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [nextPage]);
 
   return (
     <main
@@ -79,7 +93,7 @@ export default function Home({
         </div>
       </header>
       <section className="pt-3 h-full w-full flex flex-col items-center mt-14">
-        <div className="w-[614px] mb-4 pl-8">
+        <div className="w-[614px] mb-8 pl-8">
           <p
             className={`m-0 font-bold text-2xl ${
               !quotes.length ? "hidden" : ""
@@ -97,7 +111,7 @@ export default function Home({
             return (
               <div
                 key={q._id}
-                className="w-[614px] mb-8 pl-8 border-l-8 border-yellow-400"
+                className="w-[614px] mb-16 pl-8 border-l-8 border-yellow-400"
               >
                 <p className="text-2xl font-medium">{`"${q?.quoteText}"`}</p>
               </div>
@@ -105,7 +119,7 @@ export default function Home({
           })
         )}
         <div
-          onClick={getQuotesByAuthor}
+          onClick={() => getQuotesByAuthor(1)}
           className={`${
             quotes.length ? "hidden" : ""
           } mt-2 px-[10px] py-[20px] flex w-[580px] bg-white items-center justify-between hover:bg-black hover:text-white hover:cursor-pointer`}
@@ -121,7 +135,24 @@ export default function Home({
       </section>
       <footer className="fixed left-0 bottom-0">
         <div className="w-screen h-10 flex justify-center items-center bg-white">
-          <p className="font-light">created by dedi-dev - devChallenges.io</p>
+          <p className="font-light">
+            created by{" "}
+            <a
+              className="hover:text-yellow-400"
+              href="https://www.linkedin.com/in/dedi-20712119b/"
+              target="_blank"
+            >
+              Dedi
+            </a>
+            {" - "}
+            <a
+              className="hover:text-yellow-400"
+              href="https://devchallenges.io/"
+              target="_blank"
+            >
+              devChallenges.io
+            </a>
+          </p>
         </div>
       </footer>
     </main>
